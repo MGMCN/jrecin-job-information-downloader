@@ -81,6 +81,7 @@ class Crawler:
                     return element.get_text(strip=True).replace("\n", "").replace("\t", "")
                 return ""
 
+            university = clean_text(soup.find('p', class_='me-md-3'))
             location = clean_text(soup.find('p', string=lambda x: x and '勤務地' in x))
             research_field = clean_text(soup.find('p', string=lambda x: x and '研究分野' in x))
             start_date = clean_text(soup.find('p', string=lambda x: x and '公開開始日' in x))
@@ -115,6 +116,7 @@ class Crawler:
                 if parent:
                     qualification += clean_text(parent)
 
+            # print(f'University: {university}')
             # print(f'Location: {location}')
             # print(f'Research Field: {research_field}')
             # print(f'Start Date: {start_date}')
@@ -124,6 +126,7 @@ class Crawler:
             # print(f'Qualification: {qualification}')
 
             return {
+                "university": university,
                 "location": location,
                 "research_field": research_field,
                 "start_date": start_date,
@@ -134,6 +137,7 @@ class Crawler:
             }
         else:
             return {
+                "university": None,
                 "location": None,
                 "research_field": None,
                 "start_date": None,
