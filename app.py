@@ -23,7 +23,7 @@ class App:
             filename = f'jobs_{task_id}.xlsx'
             cleaned_filename = re.sub(f"[{re.escape(invalid_chars)}]", '_', filename)
 
-            df.to_excel(self.path+cleaned_filename, index=False, engine='openpyxl')
+            df.to_excel(self.path + cleaned_filename, index=False, engine='openpyxl')
 
         def generate_download_stream(task_id):
             print(f"Starting download for task ID: {task_id}")
@@ -39,36 +39,43 @@ class App:
                     if success:
                         detail_page_urls.extend(crawler.parse_search_page_and_generte_item_detail_page_url(html))
 
-                progress_bar_increment = 100 / len(detail_page_urls)
+                if len(detail_page_urls) != 0:
+                    progress_bar_increment = 100 / len(detail_page_urls)
 
-                data = {'message': "init_done"}  # Not graceful
-                js_data = json.dumps(data)
-                yield f"data: {js_data}\n\n"
-
-                for detail_page_url in detail_page_urls:
-                    data = {'message': "", 'increment': progress_bar_increment}
-
-                    if "jrecin" in detail_page_url:
-                        success, message, html = crawler.do_request(detail_page_url)
-                        if success:
-                            job_description = crawler.parse_detail_page_and_generate_job_description_item(html)
-                            job_description['url'] = detail_page_url
-                            self.tasks[task_id]['job_descriptions'].append(job_description)
-                            data['message'] = f"Crawled {detail_page_url}"
-                        else:
-                            data['message'] = f"{message}"
-                    else:
-                        job_description = crawler.parse_detail_page_and_generate_job_description_item(html, False)
-                        job_description['url'] = detail_page_url
-                        self.tasks[task_id]['job_descriptions'].append(job_description)
-                        data['message'] = f"Pages not from jrec cannot be parsed {detail_page_url}"
-
+                    data = {'message': "init_done"}  # Not graceful
                     js_data = json.dumps(data)
                     yield f"data: {js_data}\n\n"
 
-            save_data_to_excel(task_id)
+                    for detail_page_url in detail_page_urls:
+                        data = {'message': "", 'increment': progress_bar_increment}
+
+                        if "jrecin" in detail_page_url:
+                            success, message, html = crawler.do_request(detail_page_url)
+                            if success:
+                                job_description = crawler.parse_detail_page_and_generate_job_description_item(html)
+                                job_description['url'] = detail_page_url
+                                self.tasks[task_id]['job_descriptions'].append(job_description)
+                                data['message'] = f"Crawled {detail_page_url}"
+                            else:
+                                data['message'] = f"{message}"
+                        else:
+                            job_description = crawler.parse_detail_page_and_generate_job_description_item(html, False)
+                            job_description['url'] = detail_page_url
+                            self.tasks[task_id]['job_descriptions'].append(job_description)
+                            data['message'] = f"Pages not from jrec cannot be parsed {detail_page_url}"
+
+                        js_data = json.dumps(data)
+                        yield f"data: {js_data}\n\n"
+
+                    save_data_to_excel(task_id)
+                else:
+                    data = {'message': "no_matching", "alert_message": "No matching jobs found!"}  # Not graceful
+                    js_data = json.dumps(data)
+                    yield f"data: {js_data}\n\n"
+
             data = {'message': "done"}  # Not graceful
             js_data = json.dumps(data)
+            self.tasks.pop(task_id, None)
             yield f"data: {js_data}\n\n"
 
         @self.app.route("/", methods=["GET"])

@@ -31,7 +31,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modal-body-text">
                 Your download task has been completed successfully.
             </div>
             <div class="modal-footer">
@@ -69,6 +69,7 @@
         var source = new EventSource(`/start_download?task_id=${encodeURIComponent(taskId)}`);
         var progress = 0;
         var initAlert = document.getElementById('init-alert');
+        var modalBodyText = document.getElementById('modal-body-text');
         source.onmessage = function (event) {
             var downloadList = document.getElementById('download-list');
             var progressBar = document.querySelector('.progress-bar');
@@ -78,13 +79,15 @@
             if (data.message === "done") {
                 source.close();
                 progressBar.style.width = '100%';
-                // Show the modal
                 $('#downloadCompleteModal').modal('show');
             } else if (data.message === "init_done") {
                 initAlert.style.display = 'none';
+            } else if (data.message === "no_matching") {
+                initAlert.style.display = 'none';
+                modalBodyText.innerText = data.alert_message;
+                $('#downloadCompleteModal').modal('show');
             } else {
                 newItem.textContent = data.message;
-                // Update progress
                 progress += data.increment;
                 progressBar.style.width = progress + '%';
 
