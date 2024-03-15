@@ -26,7 +26,7 @@ class App:
             df.to_excel(self.path + cleaned_filename, index=False, engine='openpyxl')
 
         def generate_download_stream(task_id):
-            print(f"Starting download for task ID: {task_id}")
+            self.app.logger.debug(f"Starting download for task ID: {task_id}")
             crawler = Crawler(self.tasks[task_id]['url'])
 
             success, message, html = crawler.do_request(crawler.get_search_request_url(None))
@@ -46,9 +46,8 @@ class App:
                     js_data = json.dumps(data)
                     yield f"data: {js_data}\n\n"
 
+                    data['increment'] = progress_bar_increment
                     for detail_page_url in detail_page_urls:
-                        data = {'message': "", 'increment': progress_bar_increment}
-
                         if "jrecin" in detail_page_url:
                             success, message, html = crawler.do_request(detail_page_url)
                             if success:
@@ -69,13 +68,14 @@ class App:
 
                     save_data_to_excel(task_id)
                 else:
+                    self.app.logger.debug(f"No matching jobs found!: {task_id}")
                     data = {'message': "no_matching", "alert_message": "No matching jobs found!"}  # Not graceful
                     js_data = json.dumps(data)
                     yield f"data: {js_data}\n\n"
 
+            self.tasks.pop(task_id, None)
             data = {'message': "done"}  # Not graceful
             js_data = json.dumps(data)
-            self.tasks.pop(task_id, None)
             yield f"data: {js_data}\n\n"
 
         @self.app.route("/", methods=["GET"])
@@ -95,4 +95,4 @@ class App:
             return Response(stream_with_context(generate_download_stream(task_id)), content_type='text/event-stream')
 
     def run(self):
-        self.app.run(host='0.0.0.0', port=3333)
+        self.app.run(host='0.0.0.0', port=3333, debug=True)
