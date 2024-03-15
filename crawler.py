@@ -30,16 +30,21 @@ class Crawler:
         return Crawler.search_base_url + query_string
 
     def do_request(self, url) -> (bool, str, str):
-        response = requests.get(url, headers=Crawler.headers, timeout=20)
-
         success = True
         message = "Request {url} succeeded"
+        text = None
 
-        if response.status_code != 200:
+        try:
+            response = requests.get(url, headers=Crawler.headers, timeout=20)
+            if response.status_code != 200:
+                success = False
+                message = f'Request {url} failed，status_code：{response.status_code}'
+            text = response.text
+        except Exception as e:
             success = False
-            message = f'Request {url} failed，status_code：{response.status_code}'
+            message = f'Request {url} failed，error_message：{e}'
 
-        return success, message, response.text
+        return success, message, text
 
     def parse_item_count_and_generate_search_page_url(self, html) -> list:
         soup = BeautifulSoup(html, 'html.parser')  # 'lxml'
