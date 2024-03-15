@@ -38,6 +38,8 @@ class App:
                     success, message, html = crawler.do_request(search_url)
                     if success:
                         detail_page_urls.extend(crawler.parse_search_page_and_generte_item_detail_page_url(html))
+                    else:
+                        self.app.logger.debug(f"Request search_url error: {search_url}")
 
                 if len(detail_page_urls) != 0:
                     progress_bar_increment = 100 / len(detail_page_urls)
@@ -56,6 +58,7 @@ class App:
                                 self.tasks[task_id]['job_descriptions'].append(job_description)
                                 data['message'] = f"Crawled {detail_page_url}"
                             else:
+                                self.app.logger.debug(f"Request detail_page error: {detail_page_url}")
                                 data['message'] = f"{message}"
                         else:
                             job_description = crawler.parse_detail_page_and_generate_job_description_item(html, False)
