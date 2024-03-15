@@ -86,6 +86,8 @@
                 initAlert.style.display = 'none';
                 modalBodyText.innerText = data.alert_message;
                 $('#downloadCompleteModal').modal('show');
+            } else if (data.message === "store_error") {
+                modalBodyText.innerText = data.alert_message;
             } else {
                 newItem.textContent = data.message;
                 progress += data.increment;
