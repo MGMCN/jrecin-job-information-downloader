@@ -1,6 +1,7 @@
 from urllib.parse import urlparse, parse_qs, urlencode
 import requests
 from bs4 import BeautifulSoup
+import re
 
 
 class Crawler:
@@ -94,6 +95,11 @@ class Crawler:
                     return element.get_text(strip=True).replace("\n", "").replace("\t", "")
                 return ""
 
+            def clean_pure_text(text):
+                text = re.sub(r'&[a-zA-Z]+;', '', text)
+                text = ''.join(char for char in text if ord(char) >= 32 or char in '\t\n\r')
+                return text
+
             university = clean_text(soup.find('p', class_='me-md-3'))
             location = clean_text(soup.find('p', string=lambda x: x and '勤務地' in x))
             research_field = clean_text(soup.find('p', string=lambda x: x and '研究分野' in x))
@@ -133,13 +139,13 @@ class Crawler:
             job_description = ""
             if job_descriptions:
                 texts = job_descriptions.find_all(string=True)
-                job_description += "\n".join([text.strip() for text in texts if text.strip() != ""])
+                job_description += "\n".join([clean_pure_text(text.strip()) for text in texts if text.strip() != ""])
 
             work_times = soup.find("div", class_="card_item border-bottom border-secondary")
             work_time = ""
             if work_times:
                 texts = work_times.find_all(string=True)
-                work_time += "\n".join([text.strip() for text in texts if text.strip() != ""])
+                work_time += "\n".join([clean_pure_text(text.strip()) for text in texts if text.strip() != ""])
 
             # print(f'University: {university}')
             # print(f'Location: {location}')

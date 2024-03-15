@@ -66,7 +66,14 @@ class App:
                         js_data = json.dumps(data)
                         yield f"data: {js_data}\n\n"
 
-                    save_data_to_excel(task_id)
+                    try:
+                        save_data_to_excel(task_id)
+                    except Exception as e:
+                        error_message = f"An error occurred when write data to excel: {e}"
+                        self.app.logger.debug(error_message)
+                        data = {'message': "store_error", "alert_message": error_message}  # Not graceful
+                        js_data = json.dumps(data)
+                        yield f"data: {js_data}\n\n"
                 else:
                     self.app.logger.debug(f"No matching jobs found!: {task_id}")
                     data = {'message': "no_matching", "alert_message": "No matching jobs found!"}  # Not graceful
