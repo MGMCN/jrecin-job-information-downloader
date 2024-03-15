@@ -12,7 +12,7 @@ class Crawler:
                   'application/signed-exchange;v=b3;q=0.7',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7',
         'Connection': 'keep-alive',
-        'Referer': 'https://jrecin.jst.go.jp/seek/SeekJorSearch',
+        'Referer': 'https://jrecin.jst.go.jp',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
         'sec-ch-ua-mobile': '?0',
@@ -44,7 +44,6 @@ class Crawler:
         soup = BeautifulSoup(html, 'html.parser')  # 'lxml'
         item_count = soup.find('span', class_="em_text me-2")
         count = int(item_count.text) if item_count else 0
-        pages = 0
         if count % 50 != 0:
             pages = int((count / 50) + 1)
         else:
@@ -73,6 +72,20 @@ class Crawler:
         return detail_page_urls
 
     def parse_detail_page_and_generate_job_description_item(self, html, flag=True) -> dict:
+
+        item = {
+            "university": None,
+            "location": None,
+            "research_field": None,
+            "start_date": None,
+            "end_date": None,
+            "job_type": None,
+            "salary": None,
+            "qualification": None,
+            "job_description": None,
+            "work_time": None
+        }
+
         if flag:
             soup = BeautifulSoup(html, 'html.parser')
 
@@ -116,6 +129,18 @@ class Crawler:
                 if parent:
                     qualification += clean_text(parent)
 
+            job_descriptions = soup.find("div", class_="card_item border-0")
+            job_description = ""
+            if job_descriptions:
+                texts = job_descriptions.find_all(string=True)
+                job_description += "\n".join([text.strip() for text in texts if text.strip() != ""])
+
+            work_times = soup.find("div", class_="card_item border-bottom border-secondary")
+            work_time = ""
+            if work_times:
+                texts = work_times.find_all(string=True)
+                work_time += "\n".join([text.strip() for text in texts if text.strip() != ""])
+
             # print(f'University: {university}')
             # print(f'Location: {location}')
             # print(f'Research Field: {research_field}')
@@ -124,8 +149,10 @@ class Crawler:
             # print(f'Job Type: {job_type}')
             # print(f'Salary: {salary}')
             # print(f'Qualification: {qualification}')
+            # print(f'Job_description: {job_description}')
+            # print(f'Work_time: {work_time}')
 
-            return {
+            item = {
                 "university": university,
                 "location": location,
                 "research_field": research_field,
@@ -133,19 +160,12 @@ class Crawler:
                 "end_date": end_date,
                 "job_type": job_type,
                 "salary": salary,
-                "qualification": qualification
+                "qualification": qualification,
+                "job_description": job_description,
+                "work_time": work_time
             }
-        else:
-            return {
-                "university": None,
-                "location": None,
-                "research_field": None,
-                "start_date": None,
-                "end_date": None,
-                "job_type": None,
-                "salary": None,
-                "qualification": None
-            }
+
+        return item
 
 
 # only for test
@@ -171,4 +191,5 @@ if __name__ == '__main__':
 
     print(detail_page_urls[1])
     success, message, html = c.do_request(detail_page_urls[1])
-    c.parse_detail_page_and_generate_job_description_item(html)
+    print(c.parse_detail_page_and_generate_job_description_item(html))
+    print(c.parse_detail_page_and_generate_job_description_item(html, False))
