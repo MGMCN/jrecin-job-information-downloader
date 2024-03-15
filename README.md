@@ -1,8 +1,7 @@
 # jrecin-job-information-downloader
-[![build](https://img.shields.io/github/actions/workflow/status/MGMCN/jrecin-job-information-downloader/release.yml?logo=github&label=release
-)](https://img.shields.io/github/actions/workflow/status/MGMCN/jrecin-job-information-downloader/release.yml?logo=github&label=release
-)
-[![image](https://img.shields.io/github/v/release/MGMCN/jrecin-job-information-downloader?color=purple)](https://img.shields.io/github/v/release/MGMCN/jrecin-job-information-downloader?color=purple)
+[![release_build](https://img.shields.io/github/actions/workflow/status/MGMCN/jrecin-job-information-downloader/release.yml?logo=github&label=release
+)](https://github.com/MGMCN/jrecin-job-information-downloader/actions)
+[![image](https://img.shields.io/github/v/release/MGMCN/jrecin-job-information-downloader?color=purple&label=version)](https://github.com/MGMCN/jrecin-job-information-downloader/releases)
 [![image](https://img.shields.io/docker/pulls/godmountain/jrecin-job-information-downloader?logo=docker&logoColor=white)](https://hub.docker.com/r/godmountain/jrecin-job-information-downloader)
 [![issue](https://img.shields.io/github/issues/MGMCN/jrecin-job-information-downloader?logo=github)](https://github.com/MGMCN/jrecin-job-information-downloader/issues?logo=github)
 [![license](https://img.shields.io/github/license/MGMCN/jrecin-job-information-downloader)](https://github.com/MGMCN/jrecin-job-information-downloader/blob/main/LICENSE)
@@ -19,5 +18,5 @@ $ docker run -d -p 3333:3333 -v your/local/path/directory:/APP/excels godmountai
 Then visit http://127.0.0.1:3333 . 
 The index.html page of this project is implemented to mimic the search page of [JREC-IN](https://jrecin.jst.go.jp/seek/SeekJorSearch).
 
-## Warnings ⚠️
+## ⚠️ Warnings ⚠️
 ### This project is for learning purposes only and cannot be used for commercial use!
