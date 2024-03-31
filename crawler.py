@@ -65,16 +65,15 @@ class Crawler:
 
     def parse_search_page_and_generte_item_detail_page_url(self, html) -> list:
         soup = BeautifulSoup(html, 'html.parser')
-        a_tags = soup.find_all('a', class_='btn dtl_btn text-center mb-2')
-        detail_page_urls = [f"{Crawler.home_base_url}{tag.get('href')}" for tag in a_tags]
 
-        button_tags = soup.find_all('button', class_='btn dtl_btn text-center mb-2')
-        outside_detail_page_urls = [tag.get('data-url') for tag in button_tags]
+        a_tags = soup.find_all('h5', class_='card_title_min')
+        detail_page_urls = [
+            f"{Crawler.home_base_url}{tag.find('a').get('href') if tag.find('a').has_attr('href') else tag.find('a').get('data-url')}"
+            for tag in a_tags
+        ]
 
         # print(len(detail_page_urls), detail_page_urls)
-        # print(len(outside_detail_page_urls), outside_detail_page_urls)
 
-        detail_page_urls.extend(outside_detail_page_urls)
         return detail_page_urls
 
     def parse_detail_page_and_generate_job_description_item(self, html, flag=True) -> dict:
