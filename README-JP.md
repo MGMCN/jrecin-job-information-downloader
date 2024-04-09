@@ -18,7 +18,7 @@ JREC-INから求人情報を一括ダウンロードし、エクセルファイ�
 $ docker pull godmountain/jrecin-job-information-downloader:latest
 $ docker run -d -p 3333:3333 -v your/local/path/directory:/APP/excels godmountain/jrecin-job-information-downloader:latest
 ```
-そして、http://127.0.0.1:3333をアクセスしてください。
+そして、http://127.0.0.1:3333 をアクセスしてください。
 このプロジェクトのindex.htmlページは、以下の検索ページ[JREC-IN](https://jrecin.jst.go.jp/seek/SeekJorSearch)を模倣して実装されています。
 
 ## ⚠️ 警告 ⚠️
