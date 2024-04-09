@@ -1,5 +1,5 @@
 <p>
-  English / <a href="./README-JP.md">日本語</a>
+  <a href="./README.md">English</a> / 日本語
 </p>
 
 # jrecin-job-information-downloader
@@ -11,16 +11,15 @@
 [![license](https://img.shields.io/github/license/MGMCN/jrecin-job-information-downloader)](https://github.com/MGMCN/jrecin-job-information-downloader/blob/main/LICENSE)
 ![last_commit](https://img.shields.io/github/last-commit/MGMCN/jrecin-job-information-downloader?color=red&logo=github)
 
- Download job postings in bulk from JREC-IN and save them as an Excel file.
-
- ## Usage
-Pull our built image directly.
+JREC-INから求人情報を一括ダウンロードし、エクセルファイルとして保存します。
+## 使用方法
+ビルドしたイメージを引っ張ってください。
 ```bash
 $ docker pull godmountain/jrecin-job-information-downloader:latest
 $ docker run -d -p 3333:3333 -v your/local/path/directory:/APP/excels godmountain/jrecin-job-information-downloader:latest
 ```
-Then visit http://127.0.0.1:3333 . 
-The index.html page of this project is implemented to mimic the search page of [JREC-IN](https://jrecin.jst.go.jp/seek/SeekJorSearch).
+そして、http://127.0.0.1:3333 をアクセスしてください。
+このプロジェクトのindex.htmlページは、以下の検索ページ[JREC-IN](https://jrecin.jst.go.jp/seek/SeekJorSearch)を模倣して実装されています。
 
-## ⚠️ Warnings ⚠️
-### This project is for learning purposes only and cannot be used for commercial use!
+## ⚠️ 警告 ⚠️
+### このプロジェクトは学習目的のみであり、商用利用することはできません。
