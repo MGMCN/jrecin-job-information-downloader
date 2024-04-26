@@ -108,7 +108,7 @@ class Crawler:
             location = clean_text(soup.find('p', string=lambda x: x and '勤務地' in x))
             research_field = clean_text(soup.find('p', string=lambda x: x and '研究分野' in x))
             start_date = clean_text(soup.find('p', string=lambda x: x and '公開開始日' in x))
-            end_date = clean_text(soup.find('p', string=lambda x: x and '募集終了日' in x))
+            end_date = clean_text(soup.find('span', string=lambda x: x and '募集終了日' in x))
 
             salary = ""
             salaries = soup.find('p', string='給与')
